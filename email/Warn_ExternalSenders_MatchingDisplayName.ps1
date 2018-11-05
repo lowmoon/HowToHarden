@@ -1,6 +1,18 @@
 #this mail flow rule will prepend an HTML warning banner to any message originating from outside the organization from a display name which matches an internal employee's name
 #note that this warning will appear for message sent from employee's personal email accounts, or if the employee has a relatively common name
 
+$MSOnline = Get-Module -ListAvailable -Name MSOnline
+if (!$MSOnline)
+{
+    Install-Module MSOnline
+}   
+
+#Connect using MFA
+    $CreateEXOPSSession = (Get-ChildItem -Path $env:userprofile -Filter CreateExoPSSession.ps1 -Recurse -ErrorAction SilentlyContinue -Force | Select -Last 1).DirectoryName
+    . "$CreateEXOPSSession\CreateExoPSSession.ps1"
+    Connect-EXOPSSession
+    Connect-MsolService
+
 #import required modules and connect to Office 365 if not already loaded
 if (!(Get-Module msonline))
     {
